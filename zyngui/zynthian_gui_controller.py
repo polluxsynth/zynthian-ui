@@ -631,18 +631,12 @@ class zynthian_gui_controller:
 			if isinstance(self.zctrl.osc_path,str):
 				#logging.debug("Setup zyncoder %d => %s" % (self.index,self.zctrl.osc_path))
 				midi_cc=None
-				zyn_osc_path="{}:{}".format(self.zctrl.osc_port,self.zctrl.osc_path)
-				osc_path_char=ctypes.c_char_p(zyn_osc_path.encode('UTF-8'))
-				#if zctrl.engine.osc_target:
-				#	liblo.send(zctrl.engine.osc_target, self.zctrl.osc_path)
 			elif isinstance(self.zctrl.graph_path,str):
 				#logging.debug("Setup zyncoder %d => %s" % (self.index,self.zctrl.graph_path))
 				midi_cc=None
-				osc_path_char=None
 			else:
 				#logging.debug("Setup zyncoder %d => %s" % (self.index,self.zctrl.midi_cc))
 				midi_cc=self.zctrl.midi_cc
-				osc_path_char=None
 			if zyncoder.lib_zyncoder:
 				if self.inverted:
 					pin_a=zynthian_gui_config.zyncoder_pin_b[self.index]
@@ -652,7 +646,7 @@ class zynthian_gui_controller:
 					pin_b=zynthian_gui_config.zyncoder_pin_b[self.index]
 				if pin_a<0 or pin_b<0:
 					pin_a = pin_b = 0
-				zyncoder.lib_zyncoder.setup_zyncoder(self.index, pin_a, pin_b, self.zctrl.midi_chan, midi_cc, osc_path_char, int(self.mult*self.value), int(self.mult*(self.max_value-self.val0)), self.step)
+				zyncoder.lib_zyncoder.setup_zyncoder(self.index, pin_a, pin_b, self.zctrl.midi_chan, midi_cc, None, int(self.mult*self.value), int(self.mult*(self.max_value-self.val0)), self.step)
 		except Exception as err:
 			logging.error("%s" % err)
 
