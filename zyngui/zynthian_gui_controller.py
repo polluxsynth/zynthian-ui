@@ -534,7 +534,7 @@ class zynthian_gui_controller:
 				val=zctrl.value
 
 				#If many values => use adaptative step size based on rotary speed
-				if self.n_values>=96:
+				if self.n_values>=64:
 					self.step=0
 					self.mult=1
 				else:
@@ -572,7 +572,7 @@ class zynthian_gui_controller:
 						val = (zctrl.value-zctrl.value_min)/self.scale_value
 
 				#If many values => use adaptative step size based on rotary speed
-				if self.n_values>=96:
+				if self.n_values>=64:
 					self.step=0
 
 		#Calculate scale parameter for plotting
