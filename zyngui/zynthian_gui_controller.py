@@ -547,7 +547,7 @@ class zynthian_gui_controller:
 						self.mult=max(1,int(128/self.n_values))
 						val=zctrl.value-zctrl.value_min
 						#If many values => use adaptative step size based on rotary speed
-						if self.n_values>48:
+						if self.n_values>64:
 							self.step=0 
 						else:
 							self.mult=4
