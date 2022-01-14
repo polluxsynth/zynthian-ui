@@ -54,11 +54,17 @@ class zynthian_engine_zynaddsubfx(zynthian_engine):
 		['filter.cutoff depth','/part$i/ctl/filtercutoff.depth',64],
 		['filter.Q depth','/part$i/ctl/filterq.depth',64],
 		['drum on/off','/part$i/Pdrummode','off','off|on'],
+		#['assign mode','/part$i/polyType','poly','poly|mono|legato|latch'],
 		#We need to specify the stepping for the assign mode explicitly,
 		#or else the infrastructure will map the four values to
 		#0, 32, 64 and 96, respectively.
 		['assign mode','/part$i/polyType','poly',[ [ 'poly', 'mono', 'legato', 'latch'], [0, 1, 2, 3 ] ] ],
+		#['assign mode','/part$i/polyType',0,3],
 		['voice limit','/part$i/Pvoicelimit',0,60],
+		['vlimit32','/part$i/Pvoicelimit',0,32],
+		['vlimit40','/part$i/Pvoicelimit',0,40],
+		['vlimit60','/part$i/Pvoicelimit',0,60],
+		['vlimit100','/part$i/Pvoicelimit',0,100],
 		['sustain on/off',64,'off','off|on'],
 		['portamento on/off',65,'off','off|on'],
 		#['portamento receive','/part$i/ctl/portamento.receive','off','off|on'],
@@ -84,6 +90,7 @@ class zynthian_engine_zynaddsubfx(zynthian_engine):
 	_ctrl_screens=[
 		['main',['volume','panning','filter cutoff','filter resonance']],
 		['mode',['drum on/off','sustain on/off','assign mode','voice limit']],
+		['modetest',['vlimit32','vlimit40','vlimit60','vlimit100']],
 		['portamento',['portamento on/off','portamento time','portamento up/down','portamento thresh']],
 		['modulation',['modulation','modulation amplitude','modulation depth','modulation exp']],
 		['resonance',['resonance center','res.center depth','resonance bandwidth','res.bw depth']],
@@ -303,6 +310,7 @@ class zynthian_engine_zynaddsubfx(zynthian_engine):
 
 	def send_controller_value(self, zctrl):
 		if zctrl.osc_path:
+			logging.debug("Sending control value from zyn engine: {}".format(zctrl.value))
 			liblo.send(self.osc_target,zctrl.osc_path, zctrl.get_ctrl_osc_val())
 		else:
 			raise Exception("NO OSC CONTROLLER")

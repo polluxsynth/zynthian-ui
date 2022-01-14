@@ -279,8 +279,10 @@ class zynthian_controller:
 
 			try:
 				# Send value using engine method...
+				logging.debug("Sending controller: val {} force_sending {}".format(val, force_sending))
 				self.engine.send_controller_value(self)
 			except:
+				logging.debug("Controller send exception")
 				if force_sending:
 					try:
 						# Send value using OSC/MIDI ...

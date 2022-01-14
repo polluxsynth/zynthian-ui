@@ -534,6 +534,7 @@ class zynthian_gui_controller:
 				val=zctrl.value
 
 				#If many values => use adaptative step size based on rotary speed
+				logging.debug("midi_cc=0: n_values is {}".format(self.n_values))
 				#Originally this was set to 96, but that results
 				#in sub-click resolution when the number of
 				#values gets above 32 or so.
@@ -628,7 +629,7 @@ class zynthian_gui_controller:
 				val = (self.zctrl.value-self.zctrl.value_min)/self.scale_value
 		#Set value & Update zyncoder
 		self.set_value(val, set_zyncoder, False)
-		#logging.debug("ZCTRL SYNC {} => {}".format(self.title, val))
+		logging.debug("ZCTRL SYNC {} => {}".format(self.title, val))
 
 
 	def setup_zyncoder(self):
