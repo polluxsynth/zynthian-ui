@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 # -*- coding: utf-8 -*-
 #******************************************************************************
 # ZYNTHIAN PROJECT: Zynthian LV2-plugin management
@@ -425,9 +426,10 @@ def get_plugin_ports(plugin_url):
 	for i in range(plugin.get_num_ports()):
 		port = plugin.get_port_by_index(i)
 		if port.is_a(lilv.LILV_URI_INPUT_PORT) and port.is_a(lilv.LILV_URI_CONTROL_PORT):
-			port_symbol = str(port.get_symbol())
+			port_index = str(port.get_index())
 			port_name = str(port.get_name())
-			
+			port_symbol = str(port.get_symbol())
+
 			is_toggled = port.has_property(world.ns.lv2.toggled)
 			is_integer = port.has_property(world.ns.lv2.integer)
 			is_enumeration = port.has_property(world.ns.lv2.enumeration)
@@ -437,11 +439,16 @@ def get_plugin_ports(plugin_url):
 			#for node in port.get_properties():
 			#	logging.debug("    => {}".format(get_node_value(node)))
 
+			pgroup_index = None
 			pgroup_name = None
 			pgroup_symbol = None
 			pgroup = port.get(world.ns.portgroups.group)
 			if pgroup is not None:
 				#pgroup_key = str(pgroup).split("#")[-1]
+				pgroup_index = world.get(pgroup, world.ns.lv2.index, None)
+				if pgroup_index is not None:
+					pgroup_index = int(pgroup_index)
+					#logging.warning("Port group <{}> has not index.".format(pgroup_key))
 				pgroup_name = world.get(pgroup, world.ns.lv2.name, None)
 				if pgroup_name is not None:
 					pgroup_name = str(pgroup_name)
@@ -476,9 +483,10 @@ def get_plugin_ports(plugin_url):
 				vdef = vmin
 
 			info = {
-				'index': i,
+				'index': port_index,
 				'symbol': port_symbol,
 				'name': port_name,
+				'group_index': pgroup_index,
 				'group_name': pgroup_name,
 				'group_symbol': pgroup_symbol,
 				'value': vdef,
@@ -523,6 +531,30 @@ if __name__ == '__main__':
 	generate_plugins_config_file(False)
 	generate_all_presets_cache(False)
 	
+	if len(sys.argv)>1:
+		if sys.argv[1]=="plugins":
+			generate_plugins_config_file(False)
+
+		elif sys.argv[1]=="presets":
+			if len(sys.argv)>2:
+				generate_plugin_presets_cache(sys.argv[2])
+			else:
+				generate_all_presets_cache(False)
+
+		elif sys.argv[1]=="ports":
+			if len(sys.argv)>2:
+				print(get_plugin_ports(sys.argv[2]))
+			else:
+				pass
+
+		elif sys.argv[1]=="all":
+			generate_plugins_config_file(False)
+			generate_all_presets_cache(False)
+
+	else:
+		generate_plugins_config_file(False)
+		generate_all_presets_cache(False)
+
 	#get_plugin_ports("https://github.com/dcoredump/dexed.lv2")
 	#get_plugin_ports("http://code.google.com/p/amsynth/amsynth")
 	#get_plugin_ports("https://obxd.wordpress.com")
