@@ -76,9 +76,13 @@ class zynthian_engine_zynaddsubfx(zynthian_engine):
 		['portaprop depth','/part$i/ctl/portamento.propDepth',90],
 
 		['modulation',1,0],
-		['modulation amplitude',76,127],
 		['modwheel depth','/part$i/ctl/modwheel.depth',80],
 		['modwheel exp','/part$i/ctl/modwheel.exponential','off','off|on'],
+
+		['modulation amplitude',76,127],
+		['fm amp receive','/part$i/ctl/fmamp.receive','on','off|on'],
+		['volume receive','/part$i/ctl/volume.receive','on','off|on'],
+		['sustain receive','/part$i/ctl/sustain.receive','on','off|on'],
 
 		['bendrange','/part$i/ctl/pitchwheel.bendrange','2',bend_ticks],
 		['bendrange split','/part$i/ctl/pitchwheel.is_split','off','off|on'],
@@ -108,11 +112,12 @@ class zynthian_engine_zynaddsubfx(zynthian_engine):
 		['portamento',['portamento enable','portamento auto','portamento receive']],
 		['portamento time',['portamento time','portamento up/down','threshold','threshold type']],
 		['portamento prop',['portaprop on/off','portaprop rate','portaprop depth']],
-		['modulation',['modulation','modulation amplitude','modwheel depth','modwheel exp']],
+		['modulation',['modulation','modwheel depth','modwheel exp']],
+		['mod receive',['modulation amplitude','fm amp receive', 'volume receive', 'sustain receive']],
 		['pitchwheel',['bendrange split','bendrange down','bendrange']],
 		['resonance',['resonance center','rescenter depth','resonance bandwidth','resbw depth']],
 		['bandwidth',['bandwidth','bandwidth depth','bandwidth exp']],
-		['depth',['panning depth','filter.cutoff depth','filter.Q depth']],
+		['depths',['panning depth','filter.cutoff depth','filter.Q depth']],
 		['velocity',['velocity sens.','velocity offs.']]
 	]
 
