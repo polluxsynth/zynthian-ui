@@ -359,16 +359,42 @@ class zynthian_engine_jalv(zynthian_engine):
 	def set_preset(self, processor, preset, preload=False):
 		if not preset[0]:
 			return
+		logging.info("Loading preset {}".format(preset[0]))
 		output = self.proc_cmd("preset {}".format(preset[0]))
 
-		# Parse new controller values
+		parameters = {}
+		# Read parameter values
 		for line in output.split("\n"):
 			try:
 				parts = line.split(" = ")
 				if len(parts) == 2:
-					self.lv2_zctrl_dict[parts[0]]._set_value(float(parts[1]))
+					parameters[parts[0]] = parts[1]
+					logging.info("Parameter {}: {}".format(parts[0], parts[1]))
 			except Exception as e:
 				logging.warning(e)
+
+		for name, zctrl in self.lv2_zctrl_dict.items():
+			try:
+				value = parameters[name]
+				zctrl._set_value(float(value))
+				logging.info("Parameter {} set to {}".format(name, value))
+			except Exception as e:
+				try:
+					value = zctrl.value_default
+					zctrl._set_value(float(default))
+					logging.info("Parameter {} set to default {}".format(name, value))
+				except Excption as e:
+					logging.warning("No default for {}".format(name))
+					logging.warning(e)
+
+		# Parse new controller values
+		#for line in output.split("\n"):
+		#	try:
+		#		parts = line.split(" = ")
+		#		if len(parts) == 2:
+		#			self.lv2_zctrl_dict[parts[0]]._set_value(float(parts[1]))
+		#	except Exception as e:
+		#		logging.warning(e)
 
 		return True
 
@@ -517,6 +543,7 @@ class zynthian_engine_jalv(zynthian_engine):
 								'value': val,
 								'labels': ['off', 'on'],
 								'ticks': [int(info['range']['min']), int(info['range']['max'])],
+								'value_default': int(info['range']['default']),
 								'value_min': int(info['range']['min']),
 								'value_max': int(info['range']['max']),
 								'is_toggle': True,
@@ -555,6 +582,7 @@ class zynthian_engine_jalv(zynthian_engine):
 								'value': val,
 								'labels': ['off', 'on'],
 								'ticks': [info['range']['min'], info['range']['max']],
+								'value_default': info['range']['default'],
 								'value_min': info['range']['min'],
 								'value_max': info['range']['max'],
 								'is_toggle': True,
