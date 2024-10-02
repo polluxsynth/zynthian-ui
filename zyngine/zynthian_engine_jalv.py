@@ -72,6 +72,10 @@ class zynthian_engine_jalv(zynthian_engine):
 		'http://aidadsp.cc/plugins/aidadsp-bundle/rt-neural-loader': "/zynthian/zynthian-ui/zyngui/zynthian_widget_aidax.py"
 	}
 
+	default_presets = {
+		"https://butoba.net/homepage/mimid.html": "file:///usr/local/lib/lv2/MiMi-d.presets.lv2/Default.ttl"
+	}
+
 	# ------------------------------------------------------------------------------
 	# Native formats configuration (used by zynapi_install, preset converter, etc.)
 	# ------------------------------------------------------------------------------
@@ -359,6 +363,11 @@ class zynthian_engine_jalv(zynthian_engine):
 	def set_preset(self, processor, preset, preload=False):
 		if not preset[0]:
 			return
+
+		default_preset =  self.default_presets.get(self.plugin_url)
+		if (default_preset):
+			self.proc_cmd("preset {}".format(default_preset))
+
 		output = self.proc_cmd("preset {}".format(preset[0]))
 
 		# Parse new controller values
