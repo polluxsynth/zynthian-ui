@@ -359,14 +359,20 @@ class zynthian_engine_jalv(zynthian_engine):
 			preset_list.append(("", None, "", None))
 
 		return preset_list
-
 	def set_preset(self, processor, preset, preload=False):
 		if not preset[0]:
 			return
 
-		default_preset =  self.default_presets.get(self.plugin_url)
-		if (default_preset):
-			self.proc_cmd("preset {}".format(default_preset))
+		defaults = ""
+		for symbol, zctrl in self.lv2_zctrl_dict.items():
+			default = zctrl.value_default
+			if default == None:
+				default = "None"
+			logging.info("Default {}: {}".format(symbol, default))
+			defaultset = "{} = {}".format(symbol, default)
+			defaults += defaultset
+			result = self.proc_cmd(defaultset)
+			logging.info("Default set result: {}".format(result))
 
 		output = self.proc_cmd("preset {}".format(preset[0]))
 
@@ -501,6 +507,7 @@ class zynthian_engine_jalv(zynthian_engine):
 						'value': info['value'],
 						'labels': labels,
 						'ticks': values,
+						'value_default': info['range']['default'],
 						'value_min': values[0],
 						'value_max': values[-1],
 						'is_toggle': info['is_toggled'],
@@ -526,6 +533,7 @@ class zynthian_engine_jalv(zynthian_engine):
 								'value': val,
 								'labels': ['off', 'on'],
 								'ticks': [int(info['range']['min']), int(info['range']['max'])],
+								'value_default': int(info['range']['default']),
 								'value_min': int(info['range']['min']),
 								'value_max': int(info['range']['max']),
 								'is_toggle': True,
@@ -564,6 +572,7 @@ class zynthian_engine_jalv(zynthian_engine):
 								'value': val,
 								'labels': ['off', 'on'],
 								'ticks': [info['range']['min'], info['range']['max']],
+								'value_default': info['range']['default'],
 								'value_min': info['range']['min'],
 								'value_max': info['range']['max'],
 								'is_toggle': True,
