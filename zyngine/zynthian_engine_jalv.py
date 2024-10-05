@@ -27,6 +27,7 @@ import os
 import re
 import shutil
 import logging
+import timeit
 from os.path import isfile
 from subprocess import check_output, STDOUT
 
@@ -363,20 +364,49 @@ class zynthian_engine_jalv(zynthian_engine):
 		if not preset[0]:
 			return
 
+		logging.info("Preset len {}".format(len(preset)))
+		logging.info("Preset name {}".format(preset[0]))
+		logging.info("Preset 1 {}".format(preset[1]))
+		logging.info("Preset 2 {}".format(preset[2]))
+		logging.info("Preset 3 {}".format(preset[3]))
+		logging.info("Processor: {}".format(processor.name))
+		logging.info("Processor eng info: {}".format(processor.eng_info))
+
+		start = timeit.default_timer()
 		defaults = ""
 		for symbol, zctrl in self.lv2_zctrl_dict.items():
 			default = zctrl.value_default
 			if default == None:
 				default = "None"
-			logging.info("Default {}: {}".format(symbol, default))
+			#logging.info("Default {}: {}".format(symbol, default))
 			defaultset = "{} = {}".format(symbol, default)
 			defaults += defaultset
 			result = self.proc_cmd(defaultset)
-			logging.info("Default set result: {}".format(result))
+			#logging.info("Default set result: {}".format(result))
+		end = timeit.default_timer()
+		logging.info("Default load time: {}".format(end - start))
 
+#		logging.info("Defaults: {}".format(defaults))
+#		result = self.proc_cmd(defaults)
+#		logging.info("Result: {}".format(result))
+
+#		default_preset =  self.default_presets.get(self.plugin_url)
+#		if default_preset:
+#			logging.info("Loading default preset {}".format(default_preset))
+#			start = timeit.default_timer()
+#			output = self.proc_cmd("preset {}".format(default_preset))
+#			end = timeit.default_timer()
+#			logging.info("Time: {}".format(end - start))
+
+		logging.info("Now to load {}".format(preset[0]))
+		start = timeit.default_timer()
 		output = self.proc_cmd("preset {}".format(preset[0]))
+		end = timeit.default_timer()
+		logging.info("Time: {}".format(end - start))
+		logging.info("Output: {}".format(output))
 
 		# Parse new controller values
+		start = timeit.default_timer()
 		for line in output.split("\n"):
 			try:
 				parts = line.split(" = ")
@@ -384,6 +414,8 @@ class zynthian_engine_jalv(zynthian_engine):
 					self.lv2_zctrl_dict[parts[0]]._set_value(float(parts[1]))
 			except Exception as e:
 				logging.warning(e)
+		end = timeit.default_timer()
+		logging.info("Parse Time: {}".format(end - start))
 
 		return True
 
